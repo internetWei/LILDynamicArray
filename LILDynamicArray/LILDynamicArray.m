@@ -44,15 +44,15 @@ FOUNDATION_STATIC_INLINE NSInteger word_align(NSInteger unalignedSize) {
     free(_array);
 }
 
-- (BOOL)containsObject:(const id)anObject {
+- (BOOL)containsObject:(id)anObject {
     return [self indexOfObject:anObject] != NSNotFound;
 }
 
-- (void)addObject:(const id)anObject {
+- (void)addObject:(id)anObject {
     [self setObject:anObject atIndexedSubscript:_count];
 }
 
-- (nullable id)setObject:(const id)anObject atIndexedSubscript:(NSUInteger)index {
+- (nullable id)setObject:(id)anObject atIndexedSubscript:(NSUInteger)index {
     _isMutated = 1;
     NSAssert(anObject, @"数组元素不能为nil");
     if (!anObject) return nil;
@@ -64,10 +64,11 @@ FOUNDATION_STATIC_INLINE NSInteger word_align(NSInteger unalignedSize) {
     
     id oldObject = (__bridge_transfer id)_array[index];
     _array[index] = (__bridge_retained void *)anObject;
+    
     return oldObject;
 }
 
-- (nullable id)insertObject:(const id)anObject atIndex:(NSUInteger)index {
+- (nullable id)insertObject:(id)anObject atIndex:(NSUInteger)index {
     _isMutated = 1;
     NSAssert(anObject, @"数组元素不能为nil");
     if (!anObject) return nil;
@@ -108,7 +109,7 @@ FOUNDATION_STATIC_INLINE NSInteger word_align(NSInteger unalignedSize) {
     return oldObject;
 }
 
-- (NSUInteger)indexOfObject:(const id)anObject {
+- (NSUInteger)indexOfObject:(id)anObject {
     if (!anObject) return NSNotFound;
     
     for (NSInteger index = 0; index < _count; index++) {
@@ -141,7 +142,7 @@ FOUNDATION_STATIC_INLINE NSInteger word_align(NSInteger unalignedSize) {
     if (![otherArray isKindOfClass:[self class]]) return NO;
     if (self.count != otherArray.count) return NO;
     
-    for (NSInteger i = 0; i < self.count; i++) {
+    for (NSInteger i = 0; i < _count; i++) {
         if (![self[i] isEqual:otherArray[i]]) return NO;
     }
     
@@ -187,7 +188,7 @@ FOUNDATION_STATIC_INLINE NSInteger word_align(NSInteger unalignedSize) {
 
 #pragma mark - Private
 /// 如果索引大于等于0，并且小于数组长度则返回YES，否则返回NO。
-- (BOOL)p_verifyIndex1:(const NSUInteger)index {
+- (BOOL)p_verifyIndex1:(NSUInteger)index {
     if ((NSInteger)index >= 0 && (NSInteger)index < _count) return YES;
     
     NSAssert(NO, @"索引: %ld 不合法，数组长度: %ld", (NSInteger)index, (NSInteger)_count);
@@ -195,7 +196,7 @@ FOUNDATION_STATIC_INLINE NSInteger word_align(NSInteger unalignedSize) {
 }
 
 /// 如果索引大于等于0，并且小于等于数组长度则返回YES，否则返回NO。
-- (BOOL)p_verifyIndex2:(const NSUInteger)index {
+- (BOOL)p_verifyIndex2:(NSUInteger)index {
     if ((NSInteger)index >= 0 && (NSInteger)index <= _count) return YES;
     
     NSAssert(NO, @"索引: %ld 不合法，数组长度: %ld", (NSInteger)index, (NSInteger)_count);
